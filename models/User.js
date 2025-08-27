@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
 
     //Solo para inmobiliarias: 
     representant: { type: String },
-    socialMedia: [{ type: String }],
+    socialMedia: [{ type: Map, of: String }],
     website: { type: String},
 
     createdAt: {type: Date, default: Date.now}
