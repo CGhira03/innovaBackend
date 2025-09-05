@@ -3,6 +3,7 @@ const mongoose = require ('mongoose');
 
 const propertySchema = new mongoose.Schema({
     title: { type: String, required: true },
+    description: { type: String, default: "" },
 
     direction: {
         country: { type: String, required: true },
@@ -14,7 +15,15 @@ const propertySchema = new mongoose.Schema({
         departament: { type: String }
     },
 
-    imgProperty: { type: String, default: '' },
+    images: {
+    type: [String],
+    validate: {
+        validator: function (v) {
+        return v.length >= 4 && v.length <= 20;
+        },
+        message: "Debes subir entre 4 y 20 imágenes"
+    }
+    },
 
     operation: {
         type: String, 
@@ -22,6 +31,7 @@ const propertySchema = new mongoose.Schema({
         required: true 
     },
 
+    price: { type: String, default: "Consultar" },
     pets: { type: Boolean, default: false },
 
     owner: {
