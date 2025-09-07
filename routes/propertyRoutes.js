@@ -44,15 +44,35 @@ router.post('/', auth, authInmo, upload.array('images', 20), async (req, res) =>
 });
 
 
-//Listar todos los inmuebles (acceso publico)
+//Listar todos los inmuebles con filtros (acceso publico)
 router.get('/', async (req, res) => {
-    try {
-        const properties = await Property.find().populate('owner', 'name email');
-        res.json(properties);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+  try {
+    const { country, state, city, operation, priceMin, priceMax, pets } = req.query; 
+    let filter = {};
+
+    if (country) filter["direction.country"] = { $regex: country, $options: "i" };
+    if (state) filter["direction.state"] = { $regex: state, $options: "i" };
+    if (city) filter["direction.city"] = { $regex: city, $options: "i" };
+
+    if (operation) filter.operation = operation;
+
+    if (priceMin || priceMax) {
+      filter.price = {};
+      if (priceMin) filter.price.$gte = Number(priceMin);
+      if (priceMax) filter.price.$lte = Number(priceMax);
     }
+
+    if (pets !== undefined && pets !== "") {
+      filter.pets = pets === "true";
+    }
+
+    const properties = await Property.find(filter).populate('owner', 'name email');
+    res.json(properties);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
+
 
 //Listar propiedades del usuario logueado (solo auth)
 router.get('/my-properties', auth, async (req, res) => {

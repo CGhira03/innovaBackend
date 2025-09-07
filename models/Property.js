@@ -31,7 +31,7 @@ const propertySchema = new mongoose.Schema({
         required: true 
     },
 
-    price: { type: String, default: "Consultar" },
+    price: { type: Number, required: true },
     pets: { type: Boolean, default: false },
 
     owner: {
